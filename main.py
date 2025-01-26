@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 # Will write anything that we give it
 # Also performs necessary formatting
@@ -41,3 +42,29 @@ st.divider() # Horizontal line
 
 # Images
 st.image("static/cat.png") # Also possible to set width with width parameter
+
+# Data display
+data = pd.DataFrame(
+    {
+        "Name": ["Alice", "Bob", "Charlie", "David"],
+        "Age": [23, 34, 45, 56],
+        "Occupation": ["Engineer", "Doctor", "Artist", "Chef"]
+    }
+)
+st.dataframe(data) # Displays data in a table
+
+editable_df = st.data_editor(data) # Allows editing of the data
+print(editable_df) # This will print the edited data after rerunning the entire script
+
+st.table(data) # Displays data in a table
+
+st.metric("Metric", 100) # Displays a metric
+st.metric("Number of rows", data.shape[0])
+
+sample_dict = {
+    "name": "Alice",
+    "age": 23,
+    "skills": ["Python", "SQL", "ML"]
+}
+
+st.json(sample_dict) # Displays JSON data, can also be achieved with st.write()

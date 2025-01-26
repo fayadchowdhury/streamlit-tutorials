@@ -29,3 +29,12 @@ if pressed:
 # says "You pressed the second button!" instead
 # This is because the entire app code gets run and the buttons are re-initialized
 # with just the second button being pressed
+
+# Text elements
+st.title("Title")
+st.header("Header")
+st.subheader("Subheader")
+st.markdown("This is **Markdown** text") # Works with all kinds of markdown
+st.caption("Caption")
+st.code("print('Hello, world!')") # Code block
+st.divider() # Horizontal line

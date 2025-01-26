@@ -38,3 +38,6 @@ st.markdown("This is **Markdown** text") # Works with all kinds of markdown
 st.caption("Caption")
 st.code("print('Hello, world!')") # Code block
 st.divider() # Horizontal line
+
+# Images
+st.image("static/cat.png") # Also possible to set width with width parameter

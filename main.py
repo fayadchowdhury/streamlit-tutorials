@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 # Will write anything that we give it
 # Also performs necessary formatting
@@ -68,3 +69,39 @@ sample_dict = {
 }
 
 st.json(sample_dict) # Displays JSON data, can also be achieved with st.write()
+
+# Chart elements
+
+data = pd.DataFrame(
+    {
+        "A": np.random.randn(20),
+        "B": np.random.randn(20),
+        "C": np.random.randn(20),
+    }
+)
+
+# Area chart
+st.area_chart(data)
+
+# Bar chart
+st.bar_chart(data)
+
+# Line chart
+st.line_chart(data)
+
+# Scatter plot
+scatter_data = pd.DataFrame(
+    np.random.randn(20, 2),
+    columns=["A", "B"]
+)
+st.scatter_chart(scatter_data)
+
+# Map element
+map_data = pd.DataFrame(
+    np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4], # co-ordinates around SF
+    columns=["lat", "lon"]
+)
+
+st.map(map_data)
+
+# It is also possible to do matplotlib.pyplot charts but they look mad ugly

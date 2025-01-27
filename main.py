@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from datetime import datetime
 
 # Will write anything that we give it
 # Also performs necessary formatting
@@ -105,3 +106,55 @@ map_data = pd.DataFrame(
 st.map(map_data)
 
 # It is also possible to do matplotlib.pyplot charts but they look mad ugly
+
+# Form elements
+st.title("FORMS!!!")
+
+with st.form(key="user_info_form", clear_on_submit=True): # Clear_on_submit clears the form after submit
+    # Changing these elements does not rerun the entire app
+    # This is because of the with context defined above
+    name = st.text_input("Enter your name: ") # Stores name variable from st.text_input() in name
+    age = st.number_input("Enter your age: ", min_value=0, max_value=100)
+    # Dropdown select box
+    gender = st.selectbox("Select your gender: ", ["Male", "Female", "Choose not to say"])
+    # Date input
+    dob = st.date_input("Enter your date of birth: ", min_value=datetime(1990,1,1), max_value=datetime.now())
+    # Radio button
+    graduated = st.radio("Have you graduated?", ["Yes", "No"])
+    # Check box
+    agree = st.checkbox("Can you work full time?")
+    # Multi-select
+    interests = st.multiselect("Select languages you are comfortable with: ", sorted(["Python", "SQL", "JavaScript", "Java", "C++", "C#", "Ruby", "R", "Scala", "Go", "Rust", "C"]))
+    # Slider
+    # The problem with this is that it only updates aftert the submit_button is pressed
+    # The way to address this is using State Session
+    for interest in interests:
+        expertise = st.slider(f"Rate your expertise in {interest} from 1 to 10", min_value=1, max_value=10)
+    # Text area
+    about = st.text_area("Tell us about yourself: ", max_chars=200)
+    # Time input
+    start_time_daily = st.time_input("Enter your daily start time: ", datetime.now())
+    end_time_daily = st.time_input("Enter your daily end time: ", datetime.now())
+    # File uploader
+    uploaded_file = st.file_uploader("Upload your resume (PDF or DOC(X) only): ", type=["doc", "docx", "pdf"])
+    # Color picker
+    swag_color = st.color_picker("What would be your favourite colour for swag?: ", "#ffffff")
+
+
+    submit_button = st.form_submit_button(label="Submit") # Define submit button to allow form to function properly
+    # The submit_button variable is None/False until the submit button is pressed
+    # Once the submit button is pressed, the app is rerun and the submit_button variable holds a truthy value
+    # The conditional block is then entered
+    if submit_button: # Or if st.form_submit_button(label="Submit"):
+        # Check to see if all form elements are filled
+        # Warn if not
+        if not all([name, age, gender, dob, graduated, agree, interests, about, start_time_daily, end_time_daily, uploaded_file, swag_color]):
+            st.warning("Please fill in all the fields!")
+        else:
+            st.balloons() # Shows balloons cuteee
+            st.write({
+                "name": name,
+                "age": age,
+                "graduated": graduated,
+                "dob": dob,
+            })

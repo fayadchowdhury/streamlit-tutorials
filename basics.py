@@ -208,3 +208,42 @@ if st.button(label="Increase counter"):
 
 # Another option is the callback function
 # st.button(label="Increase counter", on_click=increment_counter_and_rerun)
+
+# Fragments
+# They are a way to logically group relevant elements together
+# similar to within containers, except that updates to elements
+# within a fragment only cause that fragment to refresh and not
+# the entire app. This can be overridden by a manual st.rerun(scope="app")
+# which would cause the entire app to rerun. This is particularly
+# useful when the rest of the app (or fragments of the app) are
+# expensive to render
+
+st.title("Fragments")
+
+@st.fragment() # Needs this decorator
+def toggle_and_text():
+    with st.container(border=True):
+        cols = st.columns(3)
+        toggle_value = cols[0].toggle("Toggle")
+        cols[1].write(f"{toggle_value}")
+        cols[2].text_area("Enter text", value="Some text")
+
+@st.fragment()
+def filter_and_file():
+    with st.container(border=True):
+        cols = st.columns(5)
+        cols[0].checkbox("Filter")
+        cols[1].file_uploader("Upload file")
+        cols[2].selectbox("Choose option", ["Option 1", "Option 2", "Option 3"])
+        cols[3].slider("Select value", min_value=0, max_value=10, value=5)
+        cols[4].text_input("Enter text")
+
+toggle_and_text()
+cols = st.columns(2)
+cols[0].write("This is outside the fragment")
+# Without a specific key, this conflicts with the previous text_input
+# This is because Streamlit generates IDs for elements based on the type
+# and the parameters provided in the call
+# To produce the same element but with different IDs, specify key
+cols[1].text_input("Enter text", key="txt_main")
+filter_and_file()

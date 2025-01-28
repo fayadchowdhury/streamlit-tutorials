@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import time
 
 # Will write anything that we give it
 # Also performs necessary formatting
@@ -170,3 +171,19 @@ with st.form(key="user_info_form"): # This is a context manager
         else:
             st.balloons() # Shows balloons cuteee
             st.write(st.session_state["user_data"]) # Display the data
+
+# Caching
+
+@st.cache_data(ttl=60) # Caches the following function with its exact arguments call for 60 seconds
+def fetch_data(name):
+    time.sleep(5)
+    return {
+        "name": name
+    }
+
+st.write("Fetching data")
+st.write(fetch_data("Fayad")) 
+# The first run takes 5 seconds because of time.sleep(5)
+# Consecutive runs within a 60 second period are instantaneous
+
+# It is also possible to cache_resource. Check sources.

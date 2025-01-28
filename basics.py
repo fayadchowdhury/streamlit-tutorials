@@ -187,3 +187,24 @@ st.write(fetch_data("Fayad"))
 # Consecutive runs within a 60 second period are instantaneous
 
 # It is also possible to cache_resource. Check sources.
+
+# Manual re-runs to force app update
+
+st.title("Counter!")
+
+if "count" not in st.session_state:
+    st.session_state["count"] = 0
+
+def increment_counter_and_rerun():
+    st.session_state["count"] += 1
+    # This reruns the app and updates the counter value as soon as the button is pressed
+    # Without this, the value lags behind by 1 button press
+    st.rerun()
+
+st.write(f"Current counter value: {st.session_state["count"]}")
+
+if st.button(label="Increase counter"):
+    increment_counter_and_rerun()
+
+# Another option is the callback function
+# st.button(label="Increase counter", on_click=increment_counter_and_rerun)

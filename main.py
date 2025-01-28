@@ -110,35 +110,52 @@ st.map(map_data)
 # Form elements
 st.title("FORMS!!!")
 
-with st.form(key="user_info_form", clear_on_submit=True): # Clear_on_submit clears the form after submit
+if "user_data" not in st.session_state:
+    print("No user data found; creating new user data dictionary")
+    st.session_state["user_data"] = {}
+else:
+    print(f"Current user data (outside context manager):")
+    print(st.session_state["user_data"])
+
+with st.form(key="user_info_form"): # This is a context manager
     # Changing these elements does not rerun the entire app
     # This is because of the with context defined above
-    name = st.text_input("Enter your name: ") # Stores name variable from st.text_input() in name
-    age = st.number_input("Enter your age: ", min_value=0, max_value=100)
+    st.session_state["user_data"]["name"] = st.text_input("Enter your name: ") # Stores name variable from st.text_input() in name
+    st.session_state["user_data"]["age"] = st.number_input("Enter your age: ", min_value=0, max_value=100)
     # Dropdown select box
-    gender = st.selectbox("Select your gender: ", ["Male", "Female", "Choose not to say"])
+    st.session_state["user_data"]["gender"] = st.selectbox("Select your gender: ", ["Male", "Female", "Choose not to say"])
     # Date input
-    dob = st.date_input("Enter your date of birth: ", min_value=datetime(1990,1,1), max_value=datetime.now())
+    st.session_state["user_data"]["dob"] = st.date_input("Enter your date of birth: ", min_value=datetime(1990,1,1), max_value=datetime.now())
     # Radio button
-    graduated = st.radio("Have you graduated?", ["Yes", "No"])
+    st.session_state["user_data"]["graduated"] = st.radio("Have you graduated?", ["Yes", "No"])
     # Check box
-    agree = st.checkbox("Can you work full time?")
+    st.session_state["user_data"]["agree"] = st.checkbox("Can you work full time?")
     # Multi-select
-    interests = st.multiselect("Select languages you are comfortable with: ", sorted(["Python", "SQL", "JavaScript", "Java", "C++", "C#", "Ruby", "R", "Scala", "Go", "Rust", "C"]))
+    # st.session_state["user_data"]["languages"] = st.multiselect("Select languages you are comfortable with: ", sorted(["Python", "SQL", "JavaScript", "Java", "C++", "C#", "Ruby", "R", "Scala", "Go", "Rust", "C"]))
     # Slider
     # The problem with this is that it only updates aftert the submit_button is pressed
-    # The way to address this is using State Session
-    for interest in interests:
-        expertise = st.slider(f"Rate your expertise in {interest} from 1 to 10", min_value=1, max_value=10)
+    # The way to address this is using Streamlit's session_state and callback functions outside the form context
+    # An example is found in special_form.py
+    # Commenting this out for now
+    # for language in st.session_state["user_data"]["languages"]:
+    #     print(f"Current user data (inside context manager):\n")
+    #     print(st.session_state["user_data"])
+    #     print(f"Tackling {language}")
+    #     if "languages" not in st.session_state["user_data"]: # No expertise dictionary created; create one now
+    #         st.session_state["user_data"]["languages"] = {}
+    #     if language not in st.session_state["user_data"]["languages"]:
+    #         st.session_state["user_data"]["languages"][language] = 5
+    #     st.session_state["user_data"]["languages"][language] = st.slider(f"Rate your expertise in {language} from 1 to 10", min_value=1, max_value=10, key=language)
+    #     # expertise = st.slider(f"Rate your expertise in {language} from 1 to 10", min_value=1, max_value=10)
     # Text area
-    about = st.text_area("Tell us about yourself: ", max_chars=200)
+    st.session_state["user_data"]["about"] = st.text_area("Tell us about yourself: ", max_chars=200)
     # Time input
-    start_time_daily = st.time_input("Enter your daily start time: ", datetime.now())
-    end_time_daily = st.time_input("Enter your daily end time: ", datetime.now())
+    st.session_state["user_data"]["start_time_daily"] = st.time_input("Enter your daily start time: ", datetime.now().time())
+    st.session_state["user_data"]["end_time_daily"] = st.time_input("Enter your daily end time: ", datetime.now().time())
     # File uploader
-    uploaded_file = st.file_uploader("Upload your resume (PDF or DOC(X) only): ", type=["doc", "docx", "pdf"])
+    st.session_state["user_data"]["uploaded_file"] = st.file_uploader("Upload your resume (PDF or DOC(X) only): ", type=["doc", "docx", "pdf"])
     # Color picker
-    swag_color = st.color_picker("What would be your favourite colour for swag?: ", "#ffffff")
+    st.session_state["user_data"]["swag_color"] = st.color_picker("What would be your favourite colour for swag?: ", "#ffffff")
 
 
     submit_button = st.form_submit_button(label="Submit") # Define submit button to allow form to function properly
@@ -148,13 +165,8 @@ with st.form(key="user_info_form", clear_on_submit=True): # Clear_on_submit clea
     if submit_button: # Or if st.form_submit_button(label="Submit"):
         # Check to see if all form elements are filled
         # Warn if not
-        if not all([name, age, gender, dob, graduated, agree, interests, about, start_time_daily, end_time_daily, uploaded_file, swag_color]):
+        if not all(key in st.session_state["user_data"] for key in ["name", "age", "gender", "dob", "graduated", "agree", "about", "start_time_daily", "end_time_daily", "uploaded_file", "swag_color"]):
             st.warning("Please fill in all the fields!")
         else:
             st.balloons() # Shows balloons cuteee
-            st.write({
-                "name": name,
-                "age": age,
-                "graduated": graduated,
-                "dob": dob,
-            })
+            st.write(st.session_state["user_data"]) # Display the data
